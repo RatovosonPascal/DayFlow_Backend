@@ -1,0 +1,16 @@
+
+spring:
+  application:
+      name: EchoLife
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Echolifebd
+    username: postgres
+    password: 0885
+    driverClassName: org.postgresql.Driver
+
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
