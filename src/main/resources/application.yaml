@@ -1,4 +1,3 @@
-
 spring:
   application:
       name: EchoLife
@@ -14,3 +13,7 @@ spring:
     hibernate:
       ddl-auto: update
 
+mistral:
+  api:
+    key: ${MISTRAL_API_KEY}
+    url: ${MISTRAL_API_URL}

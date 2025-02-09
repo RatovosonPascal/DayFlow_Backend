@@ -1,41 +1,51 @@
 package com.example.EchoLife.controllers;
+
 import com.example.EchoLife.entities.ResponseMessage;
+import com.example.EchoLife.entities.UserMessageDTO;
 import com.example.EchoLife.services.ChatService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api/chat")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ChatController {
 
-    @Autowired
-    private ChatService chatService;
+    private final ChatService chatService;
+    private final ObjectMapper objectMapper;
+
+    public ChatController(ChatService chatService, ObjectMapper objectMapper) {
+        this.chatService = chatService;
+        this.objectMapper = objectMapper;
+    }
 
     @PostMapping
-    public ResponseEntity<?> chat(@RequestBody String userMessage) {
-        ObjectMapper objectMapper = null;
+    public ResponseEntity<?> chat(@RequestBody UserMessageDTO userMessageDTO) {
         try {
-            // Appel au service pour obtenir la réponse du chatbot
-            String chatbotResponse = chatService.getResponseFromHuggingFace(userMessage);
+            // 🔹 Appel au service pour obtenir la réponse de l'API Mistral
+            String chatbotResponse = chatService.getResponseFromMistral(userMessageDTO.getContent());
 
-            // Désérialiser le message (si c'est nécessaire, ici c'est un tableau JSON)
-            objectMapper = new ObjectMapper();
+            // 🔹 Désérialisation de la réponse JSON
+            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseNode = objectMapper.readTree(chatbotResponse);
 
-            // Retourner la réponse du chatbot dans un format structuré
-            return ResponseEntity.ok(new ResponseMessage("success", responseNode));
+            // 🔹 Extraction du message du chatbot
+            JsonNode choices = responseNode.path("choices");
+            String chatbotMessage = choices.get(0).path("message").path("content").asText();
+
+            // 🔹 Conversion en JsonNode
+            JsonNode chatbotMessageNode = objectMapper.createObjectNode().put("response", chatbotMessage);
+
+            // 🔹 Retourner uniquement la réponse utile du chatbot
+            return ResponseEntity.ok(new ResponseMessage("success", chatbotMessageNode));
         } catch (Exception e) {
+            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode errorMessage = objectMapper.createObjectNode().put("error", "Erreur lors de la communication avec l'API");
-            // En cas d'erreur, retourner un message d'erreur dans un format structuré
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseMessage("error", errorMessage));
         }
     }
-
 }

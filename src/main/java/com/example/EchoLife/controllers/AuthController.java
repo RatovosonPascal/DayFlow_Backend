@@ -6,6 +6,8 @@ import com.example.EchoLife.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -29,5 +31,9 @@ public class AuthController {
 
         String token = authService.authenticate(authRequest.getEmail(), authRequest.getPassword());
         return ResponseEntity.ok(token);
+    }
+    @GetMapping("/me/{id}")
+    public Optional<User> getMe(@PathVariable long id) {
+        return userService.findMe(id);
     }
 }
