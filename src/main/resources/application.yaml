@@ -1,6 +1,7 @@
 spring:
   application:
-      name: EchoLife
+    name: EchoLife
+
   datasource:
     url: jdbc:postgresql://localhost:5432/Echolifebd
     username: postgres

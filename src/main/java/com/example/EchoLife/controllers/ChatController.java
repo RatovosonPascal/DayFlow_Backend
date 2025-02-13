@@ -25,21 +25,21 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<?> chat(@RequestBody UserMessageDTO userMessageDTO) {
         try {
-            // 🔹 Appel au service pour obtenir la réponse de l'API Mistral
+            //  Appel au service pour obtenir la réponse de l'API Mistral
             String chatbotResponse = chatService.getResponseFromMistral(userMessageDTO.getContent());
 
-            // 🔹 Désérialisation de la réponse JSON
+            //  Désérialisation de la réponse JSON
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseNode = objectMapper.readTree(chatbotResponse);
 
-            // 🔹 Extraction du message du chatbot
+            //  Extraction du message du chatbot
             JsonNode choices = responseNode.path("choices");
             String chatbotMessage = choices.get(0).path("message").path("content").asText();
 
-            // 🔹 Conversion en JsonNode
+            //  Conversion en JsonNode
             JsonNode chatbotMessageNode = objectMapper.createObjectNode().put("response", chatbotMessage);
 
-            // 🔹 Retourner uniquement la réponse utile du chatbot
+            //  Retourner uniquement la réponse utile du chatbot
             return ResponseEntity.ok(new ResponseMessage("success", chatbotMessageNode));
         } catch (Exception e) {
             ObjectMapper objectMapper = new ObjectMapper();
