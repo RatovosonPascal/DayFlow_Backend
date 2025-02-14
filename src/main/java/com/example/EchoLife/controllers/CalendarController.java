@@ -2,6 +2,7 @@ package com.example.EchoLife.controllers;
 
 import com.example.EchoLife.services.GoogleCalendarService;
 import com.google.api.services.calendar.model.Event;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/calendar")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CalendarController {
     private final GoogleCalendarService googleCalendarService;
 

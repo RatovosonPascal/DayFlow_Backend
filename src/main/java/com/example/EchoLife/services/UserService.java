@@ -41,4 +41,8 @@ public class UserService {
     public Optional<User> findMe(long id) {
         return userRepository.findById(id);
     }
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    }
 }
