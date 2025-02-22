@@ -4,9 +4,12 @@ import com.example.EchoLife.entities.User;
 import com.example.EchoLife.securityConfig.JwtUtil;
 import com.example.EchoLife.services.AuthService;
 import com.example.EchoLife.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -30,12 +33,24 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
 
+        // Générer le token en fonction des informations d'authentification
         String token = authService.authenticate(authRequest.getEmail(), authRequest.getPassword());
-        System.out.println(token);
-        return ResponseEntity.ok(token);
+
+        if (token == null) {
+            // Si le token est nul, on renvoie une erreur d'authentification
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        // Créer un objet JSON pour contenir le token
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+
+        // Renvoyer la réponse avec un statut 200 OK et l'objet JSON contenant le token
+        return ResponseEntity.ok(response);
     }
+
     @GetMapping("/me/{id}")
     public Optional<User> getMe(@PathVariable long id) {
         return userService.findMe(id);
@@ -54,13 +69,14 @@ public class AuthController {
 
             // Extraire le nom d'utilisateur du token
             String username = jwtUtil.extractUsername(token);
+            System.out.println("Username extrait : " + username);
 
             if (username == null) {
                 return ResponseEntity.status(401).body("Token invalide ou expiré");
             }
 
             // Récupérer les données de l'utilisateur
-            User user = userService.getUserByUsername(username);
+            Optional<User> user = userService.findByEmail(username);
 
             if (user == null) {
                 return ResponseEntity.status(404).body("Utilisateur non trouvé");
@@ -69,6 +85,7 @@ public class AuthController {
             return ResponseEntity.ok(user); // Retourne les données de l'utilisateur
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Une erreur s'est produite");
         }
     }
