@@ -32,6 +32,25 @@ public class AuthController {
         User newUser = userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
+    @PutMapping("/user/update")
+    public ResponseEntity<User> updateUser(@RequestBody User updatedUser, @RequestHeader("Authorization") String token) {
+        // Récupérer l'utilisateur à partir du token
+        User currentUser = userService.findByToken(token);
+
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // Mettre à jour les informations
+        currentUser.setUsername(updatedUser.getUsername());
+        currentUser.setEmail(updatedUser.getEmail());
+
+        // Sauvegarde dans la base de données
+        userService.saveUser(currentUser);
+
+        return ResponseEntity.ok(currentUser);
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
