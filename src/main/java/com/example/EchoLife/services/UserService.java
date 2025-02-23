@@ -24,9 +24,9 @@ public class UserService {
 
     public User registerUser(User user) {
         // Vérifier si l'utilisateur existe déjà
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Le nom d'utilisateur est déjà pris !");
+            throw new RuntimeException("l'email est déjà pris !");
         }
 
         // Encoder le mot de passe avant de le sauvegarder
