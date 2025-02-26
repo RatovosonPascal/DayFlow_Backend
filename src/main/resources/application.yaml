@@ -13,8 +13,20 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_EMAIL}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
-mistral:
+gpt4free:
   api:
-    key: ${MISTRAL_API_KEY}
-    url: ${MISTRAL_API_URL}
+    key: ${GPT4FREE_API_KEY}
+    url: ${GPT4FREE_API_URL}
+

@@ -16,9 +16,9 @@ public class ChatService {
 
    // private static final String API_URL = "https://api.mistral.ai/v1/chat/completions";
     //private static final String API_KEY = "6GCjm4b3QIDkdUXetPjc0Hwf6RLxTrta"; //clé API
-    @Value("${mistral.api.key}")  // Injection de la clé API depuis le fichier de configuration
+    @Value("${gpt4free.api.key}")  // Injection de la clé API depuis le fichier de configuration
     private String apiKey;
-    @Value("${mistral.api.url}")  // Injection de la clé API depuis le fichier de configuration
+    @Value("${gpt4free.api.url}")  // Injection de la clé API depuis le fichier de configuration
     private String apiURL;
     public void printApiDetails() {
         System.out.println("API Key: " + apiKey);

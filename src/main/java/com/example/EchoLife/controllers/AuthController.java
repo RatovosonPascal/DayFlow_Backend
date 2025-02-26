@@ -1,5 +1,6 @@
 package com.example.EchoLife.controllers;
 import com.example.EchoLife.entities.AuthRequest;
+import com.example.EchoLife.entities.ForgotPasswordRequest;
 import com.example.EchoLife.entities.User;
 import com.example.EchoLife.securityConfig.JwtUtil;
 import com.example.EchoLife.services.AuthService;
@@ -108,6 +109,11 @@ public class AuthController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Une erreur s'est produite");
         }
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        userService.processForgotPassword(request.getEmail());
+        return ResponseEntity.ok("Un e-mail de réinitialisation a été envoyé si l'adresse existe.");
     }
 
 }
